@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>World1.qml</file>
+    </qresource>
+    <qresource prefix="/resources">
+        <file>city.png</file>
+        <file>ground-grass.png</file>
+        <file>hero-male-walking.png</file>
+        <file>medical_center.png</file>
+    </qresource>
+    <qresource prefix="/gomponents">
+        <file>MedicalCenter.qml</file>
+        <file>PlayArea.qml</file>
+    </qresource>
+    <qresource prefix="/Interior"/>
+</RCC>
