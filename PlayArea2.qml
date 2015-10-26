@@ -214,7 +214,6 @@ Rectangle {
                 break
         }
         if(check_collision_for_all()){
-            console.debug("PlayArea: collision ")
             if(!fixed_init_pos){
                 if(last_pos.x > flickable_area.contentX){
                     last_pos.x +=cell_size

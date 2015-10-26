@@ -22,6 +22,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
+#include"fileio.h"
 
 
 int main(int argc, char *argv[])
@@ -29,6 +30,7 @@ int main(int argc, char *argv[])
      QGuiApplication app(argc, argv);
      QQmlApplicationEngine engine;
      //qmlRegisterType<NetworkComm>("Networking", 1, 0, "Networkcomm");
+     qmlRegisterType<FileIO, 1>("FileIO", 1, 0, "FileIO");
      engine.load(QUrl("qrc:/main.qml"));
      QObject *topLevel = engine.rootObjects().value(0);
      QQuickWindow *window = qobject_cast<QQuickWindow *>(topLevel);

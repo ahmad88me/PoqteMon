@@ -2,6 +2,12 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>World1.qml</file>
+        <file>LevelParser.qml</file>
+        <file>level1.txt</file>
+        <file>Limage.qml</file>
+        <file>Border.qml</file>
+        <file>PlayArea2.qml</file>
+        <file>level2.txt</file>
     </qresource>
     <qresource prefix="/resources">
         <file>ground-grass.png</file>

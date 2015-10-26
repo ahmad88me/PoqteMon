@@ -6,9 +6,10 @@ PlayArea{
     width: 400
     height: 600
     init_col: 4
-    init_row: 7
+    init_row: 9
+    flickable_area: flickable_area1
     Flickable{
-        id: flickable_area
+        id: flickable_area1
         contentHeight: getXfromRow(10)
         contentWidth: getYfromCol(10)
         anchors.fill: parent
