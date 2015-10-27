@@ -8,6 +8,8 @@
         <file>Border.qml</file>
         <file>PlayArea2.qml</file>
         <file>level2.txt</file>
+        <file>GameLevel.qml</file>
+        <file>PlayArea3.qml</file>
     </qresource>
     <qresource prefix="/resources">
         <file>ground-grass.png</file>

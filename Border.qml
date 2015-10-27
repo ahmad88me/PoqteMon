@@ -6,5 +6,7 @@ Rectangle {
     border.color: "blue"
     border.width: 2
     color: "red"
+    opacity: 0.1
+
 }
 

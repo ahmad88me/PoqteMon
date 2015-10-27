@@ -7,8 +7,6 @@ Rectangle {
     focus: true
     id: playarea_comp
     color:"black"
-    property int screen_width: 400
-    property int screen_height: 600
     property string background: "../resources/ground-grass.png"
     property int frame_duration: 250
     property string hero_source: "../resources/hero-male-walking.png"
@@ -20,7 +18,20 @@ Rectangle {
     property var bpoints: []//[mc.bpoint]
     property var last_pos: {"x": 0, "y": 0}
     property bool fixed_init_pos: false
-    property var flickable_area
+    //property var flickable_area
+    property int rows: 1
+    property int cols: 1
+    property var playarea_data
+
+    Text{
+        id: playarea_name
+        text: ""
+        font.bold: true
+        color: "white"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        z: 15
+    }
 
     Keys.onPressed: {
         move(event.key)
@@ -132,10 +143,30 @@ Rectangle {
         opacity: 0.1
     }
 
-    onVisibleChanged: {
-        if(visible){
-            adjust_flickable_to_hero()
+    Flickable{
+        id: flickable_area
+        anchors.fill: parent
+        contentHeight: rows * cell_size
+        contentWidth: cols * cell_size
+
+        Rectangle{
+            id: level_overview
+            color: "yellow"
+            anchors.fill: parent
+            //opacity: 0.5
         }
+    }
+
+    Component.onCompleted: {
+        //adjust_flickable_to_hero()
+        depict_objects()
+    }
+
+    function depict_objects(){
+        playarea_name.text = playarea_data["name"]
+        console.debug("borders: "+playarea_data["bpoints"].length)
+        handle_borders(playarea_data["bpoints"])
+        handle_bimages(playarea_data["bimages"])
     }
 
     function adjust_flickable_to_hero(){
@@ -240,22 +271,8 @@ Rectangle {
     //https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
     function is_collision(rect2){
         var rect1
-        //rect1 = {"width": hero.width,"height": hero.height/2, "x": flickable_area.contentX+parent.width/2 - hero.width/2,
-       //     "y": flickable_area.contentY+parent.height/2 }//- hero.height/2}//just lower half do collide
         rect1 = {"width": hero.width/2,"height": hero.height/2, "x": flickable_area.contentX+parent.width/2 - hero.width/4,
             "y": flickable_area.contentY+parent.height/2 }// only half the character (horizontally) do collide
-
-//        console.debug("rect1:")
-//        console.debug("    width:  "+rect1.width)
-//        console.debug("    height: "+rect1.height)
-//        console.debug("    x:      "+rect1.x)
-//        console.debug("    y:      "+rect1.y)
-//        console.debug("rect2:")
-//        console.debug("    width:  "+rect2.width)
-//        console.debug("    height: "+rect2.height)
-//        console.debug("    x:      "+rect2.x)
-//        console.debug("    y:      "+rect2.y)
-
         if (rect1.x < rect2.x + rect2.width &&
            rect1.x + rect1.width > rect2.x &&
            rect1.y < rect2.y + rect2.height &&
@@ -267,27 +284,93 @@ Rectangle {
         }
     }
 
-    function append_ipoints(ipoints_v){
+    function handle_borders(borders){
         var i
-        for(i=0;i<ipoints_v.length;i++){
-            ipoints.push(ipoints_v[i])
-        }
+        var border_component = Qt.createComponent("Border.qml")
+        for(i=0;i<borders.length;i++){
+            border_component.createObject(level_overview,{
+                                              width: cell_size*borders[i].width,
+                                              height: cell_size*borders[i].height,
+                                              x: cell_size*borders[i].x,
+                                              y: cell_size*borders[i].y,
+                                              z: 10
+                                          })
+            bpoints.push({
+                                      width: cell_size*borders[i].width,
+                                      height: cell_size*borders[i].height,
+                                      x: cell_size*borders[i].x,
+                                      y: cell_size*borders[i].y,
+                                  })
+        }//forloop
     }
-    function append_bpoints(bpoints_v){
+
+    function handle_images(images){
         var i
-        for(i=0;i<bpoints_v.length;i++){
-            bpoints.push(bpoints_v[i])
+        var image_component = Qt.createComponent("Limage.qml")
+        for(i=0;i<images.length;i++){
+            image_component.createObject(level_overview,{
+                                              source: "../resources/"+images[i].name,
+                                              width: cell_size*images[i].width,
+                                              height: cell_size*images[i].height,
+                                              x: cell_size*images[i].x,
+                                              y: cell_size*images[i].y,
+                                              z: images[i].z,
+                                              fillMode: images[i].tile ? Image.Tile: Image.Stretch
+                                          })
         }
     }
 
-    function get_bpoint(comp){
-        return {"width": comp.width, "height": comp.height,
-                "x": comp.x, "y": comp.y}
+    function handle_bimages(bimages){
+        var i
+        var image_component = Qt.createComponent("Limage.qml")
+        var border_component = Qt.createComponent("Border.qml")
+        for(i=0;i<bimages.length;i++){
+            image_component.createObject(level_overview,{
+                                              source: "../resources/"+bimages[i].name,
+                                              width: cell_size*bimages[i].img_width,
+                                              height: cell_size*bimages[i].img_height,
+                                              x: cell_size*bimages[i].img_x,
+                                              y: cell_size*bimages[i].img_y,
+                                              z: bimages[i].img_z,
+                                              fillMode: bimages[i].tile ? Image.Tile: Image.Stretch
+                                          })
+            border_component.createObject(level_overview,{
+                                              width: cell_size*bimages[i].width,
+                                              height: cell_size*bimages[i].height,
+                                              x: cell_size*bimages[i].x,
+                                              y: cell_size*bimages[i].y,
+                                              z: 10
+                                          })
+            bpoints.push({
+                                      width: cell_size*bimages[i].width,
+                                      height: cell_size*bimages[i].height,
+                                      x: cell_size*bimages[i].x,
+                                      y: cell_size*bimages[i].y,
+                                  })
+        }
     }
 
-    function get_ipoints(comp, dis){
-        return {"width": comp.width, "height": comp.height,
-                "x": comp.x, "y": comp.y, "destination": dis}
-    }
+//    function append_ipoints(ipoints_v){
+//        var i
+//        for(i=0;i<ipoints_v.length;i++){
+//            ipoints.push(ipoints_v[i])
+//        }
+//    }
+//    function append_bpoints(bpoints_v){
+//        var i
+//        for(i=0;i<bpoints_v.length;i++){
+//            bpoints.push(bpoints_v[i])
+//        }
+//    }
+
+//    function get_bpoint(comp){
+//        return {"width": comp.width, "height": comp.height,
+//                "x": comp.x, "y": comp.y}
+//    }
+
+//    function get_ipoints(comp, dis){
+//        return {"width": comp.width, "height": comp.height,
+//                "x": comp.x, "y": comp.y, "destination": dis}
+//    }
 }
 

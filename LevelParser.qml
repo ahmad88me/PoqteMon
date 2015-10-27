@@ -9,106 +9,56 @@ import FileIO 1.0
 Rectangle {
     width: 100
     height: 62
+    id: level_parser
 
     property int cell_size: 50
     property var levels: []
+    property var current_game_level: null
+
 
     FileIO{
         id: my_file
-        source: ":level1.txt"
+        source: ":level2.txt"
         onError: console.log("error in fileio")
     }
-
-//    Button{
-//        text:"read"
-//        width: parent.width
-//        z:1
-//        onClicked:{
-//            var txt=my_file.read()
-//            console.debug(txt)
-//            parse(txt)
-//        }
-//    }
 
     Component.onCompleted: {
         var txt
         var i
+        var fname=":level"
         for(i=1;i<=2;i++){
-            my_file.read()
+            my_file.source=fname+i+".txt"
+            txt=my_file.read()
             console.debug(txt)
             parse(txt)
         }
-    }
-
-    PlayArea2{
-        id: playarea
-        anchors.fill: parent
-        flickable_area: flickable_area3
-        Flickable{
-            id: flickable_area3
-            focus: true
-            anchors.fill: parent
-            interactive: false
-            Rectangle{
-                id: level_overview
-                color: "yellow"
-                anchors.fill: parent
-                opacity: 0.5
-            }
-        }
+        prepare_game_level(levels[1])
     }
 
     function parse(txt){
         var j = JSON.parse(txt)
         console.debug(j["name"])
         console.debug(j["rows"]+", "+j["cols"])
-        flickable_area3.contentHeight = cell_size * j["rows"]
-        flickable_area3.contentWidth = cell_size * j["cols"]
-        handle_borders(j["bpoints"])
-        handle_images(j["images"])
-        //level_overview.children.push("")
-        //var c = Qt.createComponent("Limage.qml")
-        //var i = c.createObject(level_overview)
-        //c = Qt.createComponent("Border.qml")
-        //c.createObject(level_overview)
+        //flickable_area3.contentHeight = cell_size * j["rows"]
+        //flickable_area3.contentWidth = cell_size * j["cols"]
+        levels.push(j)
+        //handle_borders(j["bpoints"])
+        //handle_images(j["images"])
+        //handle_bimages(j["bimages"])
+    }
+
+    function prepare_game_level(j){
+        //var game_level_component = Qt.createComponent("GameLevel.qml")
+        var game_level_component = Qt.createComponent("PlayArea3.qml")
+        current_game_level = game_level_component.createObject(level_parser,
+                                                               {
+                                                                "rows": j["rows"],
+                                                                "cols": j["cols"],
+                                                                //"level_data": j
+                                                                   "playarea_data": j
+                                                               })
     }
 
 
-    function handle_borders(borders){
-        var i
-        var border_component = Qt.createComponent("Border.qml")
-        for(i=0;i<borders.length;i++){
-            border_component.createObject(level_overview,{
-                                              width: cell_size*borders[i].width,
-                                              height: cell_size*borders[i].height,
-                                              x: cell_size*borders[i].x,
-                                              y: cell_size*borders[i].y,
-                                              z: 10
-                                          })
-            playarea.bpoints.push({
-                                      width: cell_size*borders[i].width,
-                                      height: cell_size*borders[i].height,
-                                      x: cell_size*borders[i].x,
-                                      y: cell_size*borders[i].y,
-                                  })
-        }//forloop
 
-    }
-
-    function handle_images(images){
-        var i
-        var image_component = Qt.createComponent("Limage.qml")
-        for(i=0;i<images.length;i++){
-            image_component.createObject(level_overview,{
-                                              source: "../resources/"+images[i].name,
-                                              width: cell_size*images[i].width,
-                                              height: cell_size*images[i].height,
-                                              x: cell_size*images[i].x,
-                                              y: cell_size*images[i].y,
-                                              z: images[i].z,
-                                              fillMode: images[i].tile ? Image.Tile: Image.Stretch
-                                          })
-        }
-    }
 }
-
