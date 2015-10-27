@@ -1,10 +1,10 @@
 {
 "name": "Poke World 1",
-"rows": 15,
-"cols": 20,
-"ipoints": [],
-"bpoints": [{"width": 2,"height": 3,"x": 1,"y": 2}],
-"images": [{"name": "ground-grass.png", "width": 2, "height": 4,"x": 5, "y": 4,"z": 1, "tile": true},
-            {"name": "pokemon_center_img.png", "width": 2,"height": 2, "x": 5, "y": 2, "tile": false}
-            ]
+"rows": 10,
+"cols": 10,
+"ipoints": [{"width": 1, "height": 1, "x": 0, "y": 1, "destination": "Poke Center 1", "init_row": 8, "init_col": 5}],
+"bpoints": [{"width": 1,"height": 1,"x": 8,"y": 0}],
+"images": [{"name": "ground-grass.png", "width": 10, "height": 10, "x": 0,"y": 0, "tile": true}],
+"bimages": [{"name": "medical_center.png", "img_width": 2, "img_height": 2, "img_x": 0, "img_y":0,
+           "img_z": 1, "tile": false, "width": 2, "height": 2, "x": 0, "y": 0 }]
 }

@@ -10,6 +10,7 @@
         <file>level2.txt</file>
         <file>GameLevel.qml</file>
         <file>PlayArea3.qml</file>
+        <file>Ipoint.qml</file>
     </qresource>
     <qresource prefix="/resources">
         <file>ground-grass.png</file>

@@ -11,7 +11,7 @@ Rectangle {
     property int frame_duration: 250
     property string hero_source: "../resources/hero-male-walking.png"
     property int cell_size: 50
-    property int movement_step: cell_size/4
+    property int movement_step: cell_size/2
     property real init_row: 0
     property real init_col: 0
     property var ipoints : []//[mc.ipoint]
@@ -34,6 +34,7 @@ Rectangle {
     }
 
     Keys.onPressed: {
+        //console.debug("Key pressed")
         move(event.key)
     }
 
@@ -158,15 +159,17 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        //adjust_flickable_to_hero()
+        adjust_flickable_to_hero()
         depict_objects()
     }
 
     function depict_objects(){
         playarea_name.text = playarea_data["name"]
         console.debug("borders: "+playarea_data["bpoints"].length)
-        handle_borders(playarea_data["bpoints"])
+        handle_images(playarea_data["images"])
         handle_bimages(playarea_data["bimages"])
+        handle_borders(playarea_data["bpoints"])
+        handle_ipoints(playarea_data["ipoints"])
     }
 
     function adjust_flickable_to_hero(){
@@ -253,7 +256,8 @@ Rectangle {
             //console.debug("collision: "+res)
             if(res){
                 console.debug("will make some activities")
-                main.switch_to_page(ipoints[i].destination)
+                //main.switch_to_page(ipoints[i].destination)
+                parent.switch_area(ipoints[i].destination,ipoints[i].init_row,ipoints[i].init_col)
                 return false
 
             }
@@ -304,6 +308,29 @@ Rectangle {
         }//forloop
     }
 
+    function handle_ipoints(ipts){
+        var i
+        var ipoint_component = Qt.createComponent("Ipoint.qml")
+        for(i=0;i<ipts.length;i++){
+            ipoint_component.createObject(level_overview,{
+                                              width: cell_size*ipts[i].width,
+                                              height: cell_size*ipts[i].height,
+                                              x: cell_size*ipts[i].x,
+                                              y: cell_size*ipts[i].y,
+                                              z: 10
+                                          })
+            ipoints.push({
+                                      width: cell_size*ipts[i].width,
+                                      height: cell_size*ipts[i].height,
+                                      x: cell_size*ipts[i].x,
+                                      y: cell_size*ipts[i].y,
+                                      destination: ipts[i].destination,
+                                      init_row: ipts[i].init_row,
+                                      init_col: ipts[i].init_col
+                                  })
+        }//forloop
+    }
+
     function handle_images(images){
         var i
         var image_component = Qt.createComponent("Limage.qml")
@@ -349,6 +376,8 @@ Rectangle {
                                   })
         }
     }
+
+
 
 //    function append_ipoints(ipoints_v){
 //        var i

@@ -54,10 +54,31 @@ Rectangle {
                                                                {
                                                                 "rows": j["rows"],
                                                                 "cols": j["cols"],
+                                                                "init_row": j["init_row"],
+                                                                "init_col": j["init_col"],
+                                                                "focus": true,
+                                                                "width": width,
+                                                                "height": height,
                                                                 //"level_data": j
-                                                                   "playarea_data": j
+                                                                 "playarea_data": j
                                                                })
     }
+
+    function switch_area(name, init_row, init_col){
+        var i
+        console.debug("switching to: "+name)
+        for(i=0;i<levels.length;i++){
+            if(levels[i].name==name){
+                console.debug("will switch to: "+levels[i].name)
+                current_game_level.destroy()
+                levels[i].init_row = init_row
+                levels[i].init_col = init_col
+                prepare_game_level(levels[i])
+            }
+        }
+    }
+
+
 
 
 
